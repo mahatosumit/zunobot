@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test, expect, pinCapableHardware } from './fixtures';
 
 const isGpuNoise = (p: string): boolean => /GPU stall|swiftshader|GL Driver Message/i.test(p);
 
@@ -46,6 +46,7 @@ test.describe('Hero 3D robot', () => {
 
   test('without WebGL the hero silently keeps the render', async ({ browser, app }) => {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await pinCapableHardware(ctx);
     await ctx.addInitScript(() => {
       const orig = HTMLCanvasElement.prototype.getContext;
       HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {

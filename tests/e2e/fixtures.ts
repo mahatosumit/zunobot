@@ -8,8 +8,20 @@ import { openWaitlistStore, type WaitlistStore } from '../../server/db';
 
 export interface Harness { url: string; store: WaitlistStore; config: ServerConfig }
 
+/** Report a 4+ core, 4+ GB machine so the 3D auto-load path does not depend on the host running the tests. */
+export async function pinCapableHardware(ctx: import('playwright/test').BrowserContext): Promise<void> {
+  await ctx.addInitScript(() => {
+    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+    Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
+  });
+}
+
 /** Each test gets its own server, in-memory database and rate-limit state, serving the real production build in dist/. */
 export const test = base.extend<{ app: Harness; consoleProblems: string[] }>({
+  context: async ({ context }, use) => {
+    await pinCapableHardware(context);
+    await use(context);
+  },
   app: async ({}, use) => {
     const dist = path.resolve('dist');
     if (!existsSync(path.join(dist, 'index.html'))) throw new Error('dist/ is missing. Run `npm run build` before the e2e tests.');
