@@ -1,0 +1,13 @@
+{
+  "name": "ZunoBot",
+  "short_name": "ZunoBot",
+  "description": "Early-access waitlist for ZunoBot, a home-robot concept built around NAVIQ OS.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#08090b",
+  "theme_color": "#08090b",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

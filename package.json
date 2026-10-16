@@ -1,0 +1,31 @@
+{
+  "name": "zunobot-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ZunoBot early-access website: pre-rendered TypeScript front end, WebGL product viewer, and a small Node + SQLite waitlist API.",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "tsx scripts/dev.ts",
+    "build": "tsx scripts/build.ts && npm run build:server",
+    "build:server": "esbuild server/index.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist-server/index.mjs --log-level=warning",
+    "start": "node dist-server/index.mjs",
+    "typecheck": "tsc -p tsconfig.client.json --noEmit && tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.tests.json --noEmit",
+    "lint": "npm run typecheck && tsx scripts/claims-lint.ts",
+    "test": "node --import tsx --test tests/unit/*.test.ts",
+    "test:e2e": "playwright test",
+    "check:links": "tsx scripts/check-links.ts",
+    "waitlist:export": "tsx scripts/export-waitlist.ts",
+    "screenshots": "tsx tests/tools/screenshots.ts",
+    "perf": "tsx tests/tools/perf.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "esbuild": "^0.28.2",
+    "playwright": "^1.56.0",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3"
+  }
+}

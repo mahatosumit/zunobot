@@ -1,0 +1,86 @@
+/* ZunoBot design tokens. Every colour, space, radius, type size and timing used on the site comes from here. */
+
+@font-face { font-family: "Inter Display"; font-weight: 500; font-style: normal; font-display: swap;
+  src: url("/fonts/InterDisplay-Medium.woff") format("woff"); }
+@font-face { font-family: "Inter Display"; font-weight: 600; font-style: normal; font-display: swap;
+  src: url("/fonts/InterDisplay-SemiBold.woff") format("woff"); }
+@font-face { font-family: "Inter"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("/fonts/Inter-Regular.woff") format("woff"); }
+@font-face { font-family: "Inter"; font-weight: 500; font-style: normal; font-display: swap;
+  src: url("/fonts/Inter-Medium.woff") format("woff"); }
+/* Metric-matched fallback so text does not jump when the web fonts arrive. */
+@font-face { font-family: "Inter Fallback"; src: local("Arial"); size-adjust: 107.4%;
+  ascent-override: 90.2%; descent-override: 22.5%; line-gap-override: 0%; }
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces: obsidian and graphite */
+  --c-obsidian: #08090b;
+  --c-ink: #0c0d10;
+  --c-graphite-900: #111317;
+  --c-graphite-800: #171a1f;
+  --c-graphite-700: #20242b;
+  --c-graphite-600: #2b303a;
+  --c-graphite-500: #3b414d;
+  --c-line: rgb(255 255 255 / 0.09);
+  --c-line-strong: rgb(255 255 255 / 0.2);
+
+  /* Text on dark (contrast on obsidian: 17.8, 9.9, 5.9) */
+  --c-text: #f3f4f6;
+  --c-text-2: #b6bcc6;
+  --c-text-3: #8d94a0;
+
+  /* Light "studio" surfaces */
+  --c-paper: #ece8df;
+  --c-paper-2: #e0dbce;
+  --c-paper-line: rgb(14 16 20 / 0.14);
+  --c-ink-text: #0e1014;
+  --c-ink-text-2: #3f4550;
+  --c-ink-text-3: #5a616d;
+
+  /* Product accents: blue is the robot's body accent, cyan belongs to the display and intelligence, gold is light only */
+  --c-blue: #2f7dff;
+  --c-blue-600: #1d62dc;
+  /* Button fill: white text on this blue measures 5.2:1 (the brighter accent blue only reaches 3.8:1). */
+  --c-blue-btn: #2563eb;
+  --c-blue-300: #8bb7ff;
+  --c-cyan: #38e8dc;
+  --c-cyan-dim: #1fa8a0;
+  --c-gold: #e9b84b;
+  --c-gold-glow: rgb(233 184 75 / 0.2);
+  --c-danger: #ff8080;
+  --c-danger-on-light: #b3261e;
+
+  /* Type */
+  --font-display: "Inter Display", "Inter Fallback", system-ui, sans-serif;
+  --font-body: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --fs-xl: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+  --fs-h2: clamp(2rem, 1.35rem + 2.9vw, 3.75rem);
+  --fs-h1: clamp(2.5rem, 1.15rem + 5.6vw, 5.5rem);
+  --lh-tight: 1.04;
+  --lh-snug: 1.2;
+  --lh-body: 1.6;
+
+  /* Space (4px base) */
+  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-5: 1.5rem;
+  --s-6: 2rem; --s-7: 3rem; --s-8: 4.5rem; --s-9: clamp(4.5rem, 3rem + 7vw, 9rem);
+  --gutter: clamp(1.25rem, 0.5rem + 3.5vw, 3rem);
+  --maxw: 1240px;
+  --nav-h: 68px;
+
+  /* Radii */
+  --r-sm: 6px; --r-md: 12px; --r-lg: 20px; --r-xl: 32px; --r-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --t-fast: 140ms;
+  --t-med: 320ms;
+  --t-slow: 700ms;
+
+  --focus-ring: 0 0 0 2px var(--c-obsidian), 0 0 0 4px var(--c-blue-300);
+}

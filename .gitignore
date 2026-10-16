@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-server/
+data/
+*.db
+*.db-wal
+*.db-shm
+.env
+test-results/
+playwright-report/
+screenshots/
+.cache/

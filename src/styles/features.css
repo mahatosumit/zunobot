@@ -1,0 +1,27 @@
+.features__layout { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--s-8); align-items: start; }
+.features__stage { position: sticky; top: calc(var(--nav-h) + var(--s-6)); display: grid; gap: var(--s-3); }
+.features__frame { position: relative; aspect-ratio: 1; border-radius: var(--r-xl); overflow: hidden; border: 1px solid var(--c-line); background: var(--c-graphite-800); }
+.features__layer { position: absolute; inset: 0; opacity: 0; transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease); transform: scale(1.04); }
+.features__layer.is-active { opacity: 1; transform: none; }
+.features__layer .crop { height: 100%; aspect-ratio: auto !important; }
+.features__stage-note { font-size: var(--fs-xs); color: var(--c-text-3); }
+.features__hub { height: 100%; display: grid; place-items: center; padding: var(--s-5); color: var(--c-text-2); background: radial-gradient(closest-side at 50% 50%, rgb(47 125 255 / 0.12), transparent); }
+.hub { width: min(100%, 420px); }
+
+.features__list { display: grid; }
+.feature { display: grid; align-content: center; gap: var(--s-3); min-height: 52vh; padding: var(--s-7) 0; border-top: 1px solid var(--c-line); opacity: 0.5; transition: opacity var(--t-med) var(--ease); }
+.feature.is-active { opacity: 1; }
+.feature:first-child { border-top: 0; }
+.feature__n { font-size: var(--fs-xs); font-weight: 500; letter-spacing: 0.14em; color: var(--c-blue-300); }
+.feature__kicker { font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 500; color: var(--c-text-2); letter-spacing: -0.02em; }
+.feature__copy { color: var(--c-text-2); max-width: 52ch; }
+.feature__visual { display: none; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--c-line); background: var(--c-graphite-800); margin-bottom: var(--s-3); }
+.feature__visual .crop { aspect-ratio: 4 / 3 !important; }
+.feature__visual .features__hub { aspect-ratio: 4 / 3; height: auto; }
+
+@media (max-width: 960px) {
+  .features__layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .features__stage { display: none; }
+  .feature { min-height: 0; opacity: 1; padding: var(--s-6) 0; }
+  .feature__visual { display: block; }
+}
