@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test, expect, pinCapableHardware } from './fixtures';
 
 test.describe('Explore the robot', () => {
   test.beforeEach(async ({ page, app }) => {
@@ -70,6 +70,7 @@ test.describe('Explore the robot', () => {
 
   test('falls back to the static render with a retry when WebGL2 is unavailable', async ({ browser, app }) => {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await pinCapableHardware(ctx);
     await ctx.addInitScript(() => {
       const orig = HTMLCanvasElement.prototype.getContext;
       HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {

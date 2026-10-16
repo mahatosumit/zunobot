@@ -8,8 +8,24 @@ import { openWaitlistStore, type WaitlistStore } from '../../server/db';
 
 export interface Harness { url: string; store: WaitlistStore; config: ServerConfig }
 
+/** Report fixed hardware so the 3D auto-load path does not depend on the host running the tests. */
+export async function pinHardware(ctx: import('playwright/test').BrowserContext, cores: number, memoryGb: number): Promise<void> {
+  await ctx.addInitScript(([c, m]) => {
+    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => c, configurable: true });
+    Object.defineProperty(navigator, 'deviceMemory', { get: () => m, configurable: true });
+  }, [cores, memoryGb] as const);
+}
+
+/** A 4+ core, 4+ GB machine: 3D loads without being asked. */
+export const pinCapableHardware = (ctx: import('playwright/test').BrowserContext): Promise<void> => pinHardware(ctx, 8, 8);
+
 /** Each test gets its own server, in-memory database and rate-limit state, serving the real production build in dist/. */
 export const test = base.extend<{ app: Harness; consoleProblems: string[] }>({
+  context: async ({ context }, use) => {
+    // Software-rendered 3D starves slow CI runners, so only tests about 3D opt in to auto-loading it.
+    await pinHardware(context, 2, 2);
+    await use(context);
+  },
   app: async ({}, use) => {
     const dist = path.resolve('dist');
     if (!existsSync(path.join(dist, 'index.html'))) throw new Error('dist/ is missing. Run `npm run build` before the e2e tests.');
@@ -18,7 +34,7 @@ export const test = base.extend<{ app: Harness; consoleProblems: string[] }>({
     const server = createAppServer(config, store, { quiet: true });
     await new Promise<void>((r) => server.listen(0, '127.0.0.1', r));
     await use({ url: `http://127.0.0.1:${(server.address() as AddressInfo).port}`, store, config });
-    await new Promise<void>((r) => server.close(() => r()));
+    await new Promise<void>((r) => { server.close(() => r()); server.closeAllConnections(); });
     store.close();
   },
   consoleProblems: async ({ page }, use) => {

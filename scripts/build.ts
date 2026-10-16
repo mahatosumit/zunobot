@@ -10,6 +10,7 @@ import { build } from 'esbuild';
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync, readdirSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { loadEnvFile } from 'node:process';
 import type { SiteConfig } from '../src/site/config';
 import { renderHome, renderPrivacy, renderNotFound } from '../src/site/pages';
@@ -94,7 +95,7 @@ function report(site: SiteConfig): void {
   console.log(`CONTACT_EMAIL: ${site.contactEmail ? 'set' : '(not set: no public contact shown)'}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   buildSite().catch((err) => {
     console.error(err);
     process.exit(1);
