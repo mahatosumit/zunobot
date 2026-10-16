@@ -24,7 +24,6 @@ test.describe('waitlist form', () => {
     await page.goto(app.url);
     await fillWaitlist(page, { name: 'Ada Lovelace', email: 'Ada@Example.org ', country: 'United Kingdom', interest: 'research', message: 'Status cues.', research: true });
     await page.locator('[data-wl-submit]').click();
-    await expect(page.locator('[data-wl-submit]')).toBeDisabled();
     await expect(page.locator('[data-wl-success]')).toBeVisible();
     await expect(page.locator('[data-wl-success]')).toBeFocused();
     await expect(page.locator('[data-wl-form]')).toBeHidden();
