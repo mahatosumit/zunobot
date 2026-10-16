@@ -3,9 +3,9 @@
 Early-access website for **ZunoBot**, a home-robot concept built around **NAVIQ OS**. The one job of the site is to turn visitors into waitlist members while being exact about what is a design target and what is proven.
 
 * Pre-rendered static HTML (TypeScript template functions, auto-escaped), one small hashed JS bundle, one hashed CSS file.
-* A hand-written, dependency-free **WebGL2 viewer** loaded lazily for "Explore the Robot".
+* A **three.js product viewer** (procedural stylised model, PBR studio lighting, contact shadows), lazy-loaded for the hero and for "Explore the Robot".
 * A small **Node + SQLite waitlist API** (no third-party services, no credentials).
-* No runtime dependencies at all. Dev dependencies: TypeScript, esbuild, tsx, Playwright.
+* One runtime dependency, `three` (pinned, bundled into the lazy 3D chunk only). Dev dependencies: TypeScript, esbuild, tsx, Playwright, `@types/three`.
 
 ## Quick start
 
@@ -46,7 +46,7 @@ Or use the `Dockerfile` (mount a persistent volume at `/data`).
 src/site/        page templates (layout, pages, sections/*), SEO + nav config
 src/styles/      design tokens and per-section CSS
 src/client/      progressive-enhancement "islands" (nav, reveal, gallery, explore, waitlist, ...)
-src/client/viewer/   WebGL2 viewer (math, geometry, scene, renderer, index)
+src/client/viewer/   three.js viewer (robot.ts: procedural model; index.ts: renderer, lights, camera, interaction)
 shared/          validation shared by browser and server
 server/          http server, API, SQLite store, rate limiter, form tokens, security headers
 scripts/         build, dev server, claims lint, link check, CSV export
@@ -63,13 +63,14 @@ See `.env.example`. Nothing secret is ever sent to the browser. Build-time value
 
 There is no CAD or glTF model of ZunoBot in the project, only concept renders. So:
 
-* The hero and gallery use the **real renders** (background-removed), because they are the most accurate depiction.
-* "Explore the Robot" offers an **interactive stylised model** built procedurally from primitives (`src/client/viewer/scene.ts`). It is labelled "Stylised 3D model, not CAD" in the UI. Its proportions are approximate.
-* **Nothing is animated as if validated.** The arms do not articulate, the head does not pan, the wheels do not drive. The camera moves; the robot does not. The "Articulated arms" copy says what the design intends and what is unproven.
-* Behaviour: lazy-loaded chunk (about 8 kB gzipped) only on user request or on capable desktop devices; loading state; limited orbit (yaw and pitch clamps); drag, touch and keyboard (arrows, Home); auto-rotate that stops at the first interaction and can be paused; renders on demand and pauses when off-screen or the tab is hidden; adaptive resolution; WebGL context-loss handling; static poster fallback with retry; `prefers-reduced-motion` disables auto-rotation and focus tweens.
-* **Swapping in a real model later:** implement the `ProductViewer` interface from `createViewer` in `src/client/viewer/index.ts` (for example with three.js and a glTF), keep the hotspot anchor contract (`onAnchors`), and update the badge text. The rest of the page does not change.
-
-I chose a hand-written viewer over three.js because package registries were not reachable when this was built and the viewer is small; if you prefer three.js, the interface above is the seam.
+* The **real renders** (background-removed) are the first thing every visitor sees in the hero, and they drive the gallery, because they are the most accurate depiction. They are also the LCP image and the fallback for everything 3D.
+* A **stylised 3D model** is built procedurally from three.js primitives in `src/client/viewer/robot.ts`, matched by eye to the front render (side and rear renders for depth and the back panel). It is labelled "Stylised 3D model, not CAD" wherever it appears. Its proportions are approximate.
+* **Hero:** on capable desktops (wide viewport, fine pointer, at least 4 cores and 4 GB, no Save-Data, no reduced motion, WebGL2 present) the model loads after the page `load` event and an idle moment, then cross-fades over the render once its first frame is drawn. The camera eases toward the pointer and turns gently as the hero scrolls away. It is not interactive (`pointer-events: none`), so it never blocks the CTAs. Phones, reduced-motion users and devices without WebGL keep the render and never download the 3D chunk.
+* **Explore the Robot:** the same model with drag, touch and keyboard orbit (arrows, Home) inside yaw and pitch limits, focus presets per part, and hotspots that track the model (`onAnchors`).
+* **Nothing is animated as if validated.** The arms do not articulate, the head does not pan, the wheels do not drive. Only the camera moves (plus the display blinking). The "Articulated arms" copy says what the design intends and what is unproven.
+* **Rendering:** physically based materials, a `RoomEnvironment` reflection map, a warm key light (the only shadow caster), a cool rim, a hemisphere fill, a shadow-catcher floor plus a soft contact blob. Because neither robot nor lights move, the shadow map is drawn once. Neutral tone mapping keeps the whites white.
+* **Performance:** the 3D chunk is about 150 kB gzipped (three.js is most of it) and is never part of the initial load (main JS is about 6 kB gzipped). Frames render on demand only, pause off-screen and in hidden tabs, cap the pixel ratio (2, or 1.5 on touch), and drop resolution and shadow softness if the first 40 frames are slow. WebGL context loss falls back to the render (with retry in Explore).
+* **Swapping in a real model later:** replace `buildRobot()` in `src/client/viewer/robot.ts` with a GLB loaded through three.js's `GLTFLoader`, keep the `anchors` it returns (hotspot positions), and update the badge text. `ProductViewer` in `src/client/viewer/index.ts` and the rest of the page do not change. Do not ship raw CAD assemblies; export a decimated, Draco/Meshopt-compressed GLB.
 
 ## Waitlist data
 

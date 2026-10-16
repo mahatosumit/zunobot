@@ -19,9 +19,10 @@ export function hero(): Safe {
           alt="ZunoBot concept render, front view: a compact white robot with a faceted head, a dark display showing a smiling cyan face, blue chest panel and arms, and a wheeled base.">
         <div class="hero__reflection" aria-hidden="true"><img src="/images/front-cutout.webp" alt="" width="585" height="770" loading="eager" decoding="async"></div>
         <span class="hero__shadow" aria-hidden="true"></span>
+        <div class="hero__viewer" data-hero-viewer aria-hidden="true"></div>
       </div>
       <figcaption class="hero__caption">
-        <span>Design concept render</span>
+        <span data-hero-caption>Design concept render</span>
         <a class="hero__3d" href="#explore">${icons.cube} Explore in 3D</a>
       </figcaption>
     </figure>

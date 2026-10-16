@@ -20,7 +20,8 @@ Items marked **BLOCKED** need credentials, a decision or information this projec
 - [ ] Add a real bot challenge (for example Cloudflare Turnstile or hCaptcha) in front of the form if the site gets attention. The current honeypot, token and rate limits stop casual abuse only. **BLOCKED: requires an account and keys.**
 - [ ] Confirmation email and double opt-in for marketing consent, and mailing-list sync. **BLOCKED: requires an email provider and credentials.** The success message currently says no confirmation email is sent.
 - [ ] Re-check the V5 figures against CAD or a physical unit before they are stated as anything other than design targets.
-- [ ] If a CAD or glTF model becomes available, replace the stylised viewer (see README, "The 3D experience").
+- [ ] If a CAD or glTF model becomes available, replace `buildRobot()` with a compressed GLB (see README, "The 3D experience").
+- [ ] Check the hero and Explore 3D on real hardware (an integrated-GPU laptop, a mid-range Android tablet, Safari on macOS). Here it was only rendered with SwiftShader (software GL) in headless Chromium.
 - [ ] Do a manual pass with a screen reader (VoiceOver and NVDA). The automated audit here is not a substitute.
 - [ ] Real-device performance run (mid-range Android and an older iPhone) and field monitoring. Numbers in the report are lab measurements.
 - [ ] Rate limits are in memory, per process. Run a single instance, or move the limiter to a shared store before scaling out.
