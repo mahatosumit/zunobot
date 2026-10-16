@@ -120,9 +120,12 @@ export function initExplore(): void {
   resetBtn?.addEventListener('click', () => viewer?.resetView());
   spinBtn?.addEventListener('click', () => { if (viewer) viewer.setAutoRotate(!viewer.autoRotate); });
 
-  if (canAutoLoad3D() && hasWebGL2() && 'IntersectionObserver' in window) {
+  if (canAutoLoad3D() && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) { io.disconnect(); void load(); }
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      if (hasWebGL2()) void load();
+      else if (loadBtn) loadBtn.hidden = false;
     }, { rootMargin: '400px 0px' });
     io.observe(stage);
   } else if (loadBtn) {

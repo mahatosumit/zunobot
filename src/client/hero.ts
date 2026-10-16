@@ -33,7 +33,7 @@ export function initHero(): void {
   });
 
   const mount = $('[data-hero-viewer]', hero);
-  if (!mount || !canAutoLoad3D() || !hasWebGL2()) return;
+  if (!mount || !canAutoLoad3D()) return;
 
   const onScroll = (): void => {
     if (!viewer) return;
@@ -42,6 +42,7 @@ export function initHero(): void {
   };
 
   const start = async (): Promise<void> => {
+    if (!hasWebGL2()) return;
     try {
       const { createViewer } = await import('./viewer');
       const caption = $('[data-hero-caption]', hero);
@@ -55,6 +56,7 @@ export function initHero(): void {
         onLost: () => {
           viewer?.dispose();
           viewer = null;
+          window.removeEventListener('scroll', onScroll);
           stage.classList.remove('is-3d');
           if (caption) caption.textContent = 'Design concept render';
         },
