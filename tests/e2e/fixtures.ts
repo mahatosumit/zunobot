@@ -30,7 +30,7 @@ export const test = base.extend<{ app: Harness; consoleProblems: string[] }>({
     const server = createAppServer(config, store, { quiet: true });
     await new Promise<void>((r) => server.listen(0, '127.0.0.1', r));
     await use({ url: `http://127.0.0.1:${(server.address() as AddressInfo).port}`, store, config });
-    await new Promise<void>((r) => server.close(() => r()));
+    await new Promise<void>((r) => { server.close(() => r()); server.closeAllConnections(); });
     store.close();
   },
   consoleProblems: async ({ page }, use) => {
