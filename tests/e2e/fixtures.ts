@@ -8,18 +8,22 @@ import { openWaitlistStore, type WaitlistStore } from '../../server/db';
 
 export interface Harness { url: string; store: WaitlistStore; config: ServerConfig }
 
-/** Report a 4+ core, 4+ GB machine so the 3D auto-load path does not depend on the host running the tests. */
-export async function pinCapableHardware(ctx: import('playwright/test').BrowserContext): Promise<void> {
-  await ctx.addInitScript(() => {
-    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
-    Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
-  });
+/** Report fixed hardware so the 3D auto-load path does not depend on the host running the tests. */
+export async function pinHardware(ctx: import('playwright/test').BrowserContext, cores: number, memoryGb: number): Promise<void> {
+  await ctx.addInitScript(([c, m]) => {
+    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => c, configurable: true });
+    Object.defineProperty(navigator, 'deviceMemory', { get: () => m, configurable: true });
+  }, [cores, memoryGb] as const);
 }
+
+/** A 4+ core, 4+ GB machine: 3D loads without being asked. */
+export const pinCapableHardware = (ctx: import('playwright/test').BrowserContext): Promise<void> => pinHardware(ctx, 8, 8);
 
 /** Each test gets its own server, in-memory database and rate-limit state, serving the real production build in dist/. */
 export const test = base.extend<{ app: Harness; consoleProblems: string[] }>({
   context: async ({ context }, use) => {
-    await pinCapableHardware(context);
+    // Software-rendered 3D starves slow CI runners, so only tests about 3D opt in to auto-loading it.
+    await pinHardware(context, 2, 2);
     await use(context);
   },
   app: async ({}, use) => {

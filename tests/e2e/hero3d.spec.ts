@@ -3,7 +3,8 @@ import { test, expect, pinCapableHardware } from './fixtures';
 const isGpuNoise = (p: string): boolean => /GPU stall|swiftshader|GL Driver Message/i.test(p);
 
 test.describe('Hero 3D robot', () => {
-  test('capable desktop: the 3D model cross-fades in over the render and is labelled as not CAD', async ({ page, app, consoleProblems }) => {
+  test('capable desktop: the 3D model cross-fades in over the render and is labelled as not CAD', async ({ context, page, app, consoleProblems }) => {
+    await pinCapableHardware(context);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(app.url);
     const stage = page.locator('[data-hero-stage]');
